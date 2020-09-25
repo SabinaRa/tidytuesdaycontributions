@@ -71,7 +71,7 @@ p <- ggplot(AlpsAll, aes(peak_name.x, n, fill = citizenship)) +
 
 p
 
-ggsave("PlotTTw39.png", dpi = 700, height = 6, width = 8)
+ggsave("PlotTTw39.png", dpi = 700, height = 6, width = 7.5)
 
 ```
 
