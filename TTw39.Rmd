@@ -1,0 +1,77 @@
+---
+title: "TidyTuesday Himalayan Climbing Expeditions"
+output: html_document
+---
+TidyTuesday Friends 2020-09-22 |
+[Description](https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-09-22/readme.md) |
+Contributor: Sabina Rako, Twitter: @ra_sabina]
+
+```{r setup, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+library(tidytuesdayR)
+library(tidyverse)
+library(skimr)
+
+
+```
+
+## Loading data
+
+```{r message=FALSE, warning=FALSE}
+
+members <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-22/members.csv')
+expeditions <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-22/expeditions.csv')
+peaks <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-09-22/peaks.csv')
+
+```
+
+## Exploring data
+
+```{r message=FALSE, warning=FALSE}
+#skim(friends)
+skim(members)
+```
+
+## Preparing data 
+
+```{r}
+
+combined <- members %>% inner_join(expeditions, by = "expedition_id")
+
+AlpsAll <- combined %>% 
+  filter( citizenship == "Slovenia" | citizenship == "France" | citizenship == "Italy" | citizenship =="Austria" | citizenship == "Germany" | citizenship == "Monaco" | citizenship == "Switzerland")  %>% group_by(citizenship, peak_name.x) %>% 
+  count() %>% 
+  arrange(desc(n)) %>% 
+  filter(peak_name.x == "Cho Oyu" | peak_name.x == "Everest" | peak_name.x == "Ama Dablam" | peak_name.x == "Baruntse" | peak_name.x == "Manaslu") %>% ungroup() %>% 
+  mutate(id = 1)
+
+AlpsAll$id <- 1:nrow(AlpsAll)
+```
+## Visualization
+```{r}
+
+p <- ggplot(AlpsAll, aes(peak_name.x, n, fill = citizenship)) +
+  geom_bar(alpha=0.8, position = "dodge", stat = "identity") +
+  coord_polar(start = 0) + 
+  ylim(-100, 600) +  theme_minimal() + 
+  theme(
+    legend.position = "right",
+    plot.title = element_text(size=22, color="#808080"),
+    axis.text.y = element_blank(),
+    axis.text.x = element_text(size = 14), 
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    plot.margin=unit(x=c(0,0,0,0),units="mm")
+  ) + 
+  scale_fill_manual(values=c("#999999", "#c05708", "#ff828b", "#e7c582", "#00b0ba", "#0065a2")) +
+   geom_text(aes(x = peak_name.x, y = n+25, ymax = n, label = n, 
+            hjust=0.6, vjust= 0.6), size = 3,
+        position = position_dodge(width=0.8)) +
+  labs(fill = "Climber's country", title = "Top Himalayan summits climbed by Europeans \nfrom Alpine countries", caption = "Data source: The Himalayan Database: Vis: @sabina_ra")
+
+p
+
+ggsave("PlotTTw39.png", dpi = 700, height = 6, width = 8)
+
+```
+
