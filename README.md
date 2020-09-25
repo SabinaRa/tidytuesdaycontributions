@@ -6,5 +6,5 @@ https://github.com/rfordatascience/tidytuesday/blob/master/data/2020/2020-09-22/
 
 Data source: The Himalayan Database
 
-Screenshot
+
 ![Screenshot](PlotTTw39.png) 
