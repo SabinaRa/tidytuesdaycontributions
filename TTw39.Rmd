@@ -28,7 +28,6 @@ peaks <- readr::read_csv('https://raw.githubusercontent.com/rfordatascience/tidy
 ## Exploring data
 
 ```{r message=FALSE, warning=FALSE}
-#skim(friends)
 skim(members)
 ```
 
